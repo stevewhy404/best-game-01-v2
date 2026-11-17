@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:,">
+  <title>TIDEBOUND: Captain of the Sapphire Coast</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas" width="1280" height="720"></canvas>
+    
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <div class="hud-top-left">
+        <div class="hud-box">🪙 <span id="hud-gold">500</span> G</div>
+        <div class="hud-box">📦 <span id="hud-cargo">0</span>/<span id="hud-cargo-max">24</span></div>
+        <div class="hud-box">🛡️ Hull: <span id="hud-hull">100</span>/<span id="hud-hull-max">100</span></div>
+      </div>
+      <div class="hud-top-center">
+        <div class="hud-box">Day <span id="hud-day">1</span></div>
+        <div class="hud-box wind-box">Wind: <span id="hud-wind-dir">N</span> <span id="hud-wind-str">2.0x</span></div>
+      </div>
+      <div class="hud-top-right">
+        <canvas id="minimap-canvas" width="160" height="120"></canvas>
+      </div>
+      <div class="hud-bottom-left">
+        <div class="hud-contract-box" id="hud-contract">Active Contract: None (Press E near port to view)</div>
+      </div>
+      <div class="hud-bottom-right">
+        <div class="controls-hint">W/S: Sails | A/D: Steer | Space: Fire | E: Dock | P: Pause | M: Mute</div>
+      </div>
+    </div>
+
+    <!-- Title Screen -->
+    <div id="title-screen" class="screen">
+      <div class="screen-content">
+        <h1>TIDEBOUND</h1>
+        <h2>Captain of the Sapphire Coast</h2>
+        <p class="subtitle">Sail the Sapphire Coast, trade rare goods, battle pirates, and build your maritime legend!</p>
+        <div class="menu-buttons">
+          <button id="btn-start" class="btn primary">Set Sail</button>
+          <button id="btn-how" class="btn">How to Play</button>
+        </div>
+        <div class="best-score">Best Gold: <span id="lbl-best-gold">0</span></div>
+      </div>
+    </div>
+
+    <!-- How to Play Modal -->
+    <div id="how-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>How to Play</h3>
+        <ul>
+          <li><strong>Steering & Sails:</strong> Use <strong>A/D</strong> (or Left/Right) to steer. Use <strong>W/S</strong> (or Up/Down) to set sail speed. Watch the wind compass! Sailing with the wind is fast; against it is slow.</li>
+          <li><strong>Ports & Trading:</strong> Sail close to any of the 5 island ports and press <strong>E</strong> to dock. Buy low, sell high, pick up delivery contracts, repair hull, and buy ship upgrades.</li>
+          <li><strong>Combat:</strong> Pirates roam the seas. Press <strong>Space</strong> or click to fire broadside cannons toward your mouse cursor. Defeat them for gold and loot!</li>
+          <li><strong>Hazards:</strong> Avoid rocky shores and moving storm cells.</li>
+          <li><strong>Victory:</strong> Reach 10,000 Gold to achieve Legendary Captain status!</li>
+        </ul>
+        <button id="btn-close-how" class="btn">Back</button>
+      </div>
+    </div>
+
+    <!-- Trade Overlay -->
+    <div id="trade-overlay" class="overlay hidden">
+      <div class="trade-box">
+        <h2 id="trade-port-name">Port Name</h2>
+        <p id="trade-port-desc" class="port-desc">Welcome to port, Captain.</p>
+        <div class="trade-columns">
+          <div class="trade-section">
+            <h4>Market (Buy / Sell)</h4>
+            <div id="market-list"></div>
+          </div>
+          <div class="trade-section">
+            <h4>Contracts Board</h4>
+            <div id="contracts-list"></div>
+            <h4 style="margin-top: 15px;">Ship Yard</h4>
+            <div id="shipyard-list"></div>
+          </div>
+        </div>
+        <div class="trade-actions">
+          <button id="btn-repair" class="btn">Repair Hull (50G)</button>
+          <button id="btn-undock" class="btn primary">Cast Off (Un-dock)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pause Screen -->
+    <div id="pause-screen" class="screen hidden">
+      <div class="screen-content">
+        <h2>Game Paused</h2>
+        <div class="menu-buttons">
+          <button id="btn-resume" class="btn primary">Resume</button>
+          <button id="btn-restart" class="btn">Restart</button>
+          <button id="btn-quit" class="btn">Quit to Title</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="victory-screen" class="screen hidden">
+      <div class="screen-content">
+        <h1 class="victory-title">LEGENDARY CAPTAIN!</h1>
+        <p class="subtitle">You have amassed a fortune of 10,000 Gold and conquered the Sapphire Coast!</p>
+        <div class="stats-box" id="victory-stats"></div>
+        <div class="menu-buttons">
+          <button id="btn-victory-restart" class="btn primary">Sail Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameover-screen" class="screen hidden">
+      <div class="screen-content">
+        <h1 class="gameover-title">SHIP SUNK</h1>
+        <p class="subtitle">Your ship has been sent to Davy Jones' locker.</p>
+        <div class="stats-box" id="gameover-stats"></div>
+        <div class="menu-buttons">
+          <button id="btn-gameover-restart" class="btn primary">Try Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts in load order -->
+  <script src="js/audio.js"></script>
+  <script src="js/random.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/trade.js"></script>
+  <script src="js/ship.js"></script>
+  <script src="js/combat.js"></script>
+  <script src="js/pirates.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/shots.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
